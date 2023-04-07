@@ -1,0 +1,22 @@
+{
+  "name": "Generic HC32F46x",
+  "url": "http://example.com",
+  "vendor": "HDSC",
+  "frameworks": ["arduino"],
+  "build": {
+    "mcu": "hc32f46x",
+    "f_cpu": "16000000L",
+    "ld_args": {
+      "flash_start": "0x00000000",
+      "flash_size": "256K",
+      "ram_start": "0x1FFF8000",
+      "ram_size": "188K",
+      "ram_ret_start": "0x200F0000",
+      "ram_ret_size": "4K"
+    }
+  },
+  "upload": {
+    "maximum_size": 262144,
+    "maximum_ram_size": 192512
+  }
+}

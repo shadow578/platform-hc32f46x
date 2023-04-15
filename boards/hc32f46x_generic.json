@@ -2,7 +2,7 @@
   "name": "Generic HC32F46x",
   "url": "http://example.com",
   "vendor": "HDSC",
-  "frameworks": ["arduino"],
+  "frameworks": ["arduino", "ddl"],
   "build": {
     "mcu": "hc32f46x",
     "f_cpu": "16000000L",

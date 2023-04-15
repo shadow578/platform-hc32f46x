@@ -14,6 +14,13 @@
     "url": "https://github.com/shadow578/platform-hc32f46x.git"
   },
   "frameworks": {
+    "ddl": {
+      "package": "framework-hc32f46x-ddl",
+      "script": "builder/frameworks/ddl.py",
+      "description": "HC32F46x Device Driver Library",
+      "homepage": "",
+      "title": "HC32F46x DDL"
+    },
     "arduino": {
       "package": "framework-arduino-hc32f46x",
       "script": "builder/frameworks/arduino.py",
@@ -31,6 +38,10 @@
     "framework-arduino-hc32f46x": {
       "type": "framework",
       "version": "https://github.com/shadow578/framework-arduino-hc32f46x.git"
+    },
+    "framework-hc32f46x-ddl": {
+      "type": "framework",
+      "version": "https://github.com/shadow578/framework-hc32f46x-ddl.git"
     }
   }
 }

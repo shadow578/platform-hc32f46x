@@ -4,15 +4,11 @@
   "vendor": "HDSC",
   "frameworks": ["arduino", "ddl"],
   "build": {
-    "mcu": "hc32f46x",
+    "mcu": "hc32f460",
     "f_cpu": "16000000L",
     "ld_args": {
       "flash_start": "0x00000000",
-      "flash_size": "256K",
-      "ram_start": "0x1FFF8000",
-      "ram_size": "188K",
-      "ram_ret_start": "0x200F0000",
-      "ram_ret_size": "4K"
+      "flash_size": "256K"
     }
   },
   "upload": {

@@ -9,10 +9,10 @@ from SCons.Script import (
     DefaultEnvironment,
 )
 
-print("main.py running")
 
 # resolve environment
 env = DefaultEnvironment()
+
 
 # use arm-none-eabi-* binaries
 env.Replace(
@@ -51,6 +51,7 @@ env.Append(
     )
 )
 
+
 # Allow user to override via pre:script
 if env.get("PROGNAME", "program") == "program":
     env.Replace(PROGNAME="firmware")
@@ -58,6 +59,7 @@ if env.get("PROGNAME", "program") == "program":
 if not env.get("PIOFRAMEWORK"):
     sys.stderr.write("Error: PIOFRAMEWORK is not defined")
     env.Exit(1)
+
 
 #
 # Target: Build executable and linkable firmware
@@ -85,6 +87,7 @@ target_size = env.AddPlatformTarget(
     "Program Size",
     "Calculate program size",
 )
+
 
 #
 # Setup default targets

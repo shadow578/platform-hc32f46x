@@ -1,11 +1,10 @@
 {
-  "name": "Generic HC32F46x",
-  "url": "http://example.com",
-  "vendor": "HDSC",
+  "name": "Generic HC32F460 Series",
+  "url": "https://www.hdsc.com.cn/Category83-1487",
+  "vendor": "HUADA Semiconductor",
   "frameworks": ["arduino", "ddl"],
   "build": {
     "mcu": "hc32f460",
-    "f_cpu": "16000000L",
     "ld_args": {
       "flash_start": "0x00000000",
       "flash_size": "256K"

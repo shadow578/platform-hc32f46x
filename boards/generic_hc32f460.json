@@ -4,7 +4,7 @@
   "vendor": "HUADA Semiconductor",
   "frameworks": ["arduino", "ddl"],
   "build": {
-    "mcu": "hc32f460",
+    "variant": "generic_hc32f460",
     "ld_args": {
       "flash_start": "0x00000000",
       "flash_size": "256K"

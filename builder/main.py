@@ -48,7 +48,12 @@ env.Append(
             ]), "Building $TARGET"),
             suffix=".bin"
         )
-    )
+    ),
+
+    LINKFLAGS=[
+        # don't care about RWX sections, we're running from flash anyway
+        "-Wl,--no-warn-rwx-segment",
+    ],
 )
 
 

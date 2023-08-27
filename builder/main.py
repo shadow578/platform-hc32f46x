@@ -25,12 +25,12 @@ env.Replace(
     SIZETOOL="arm-none-eabi-size",
 
     ARFLAGS=["rc"],
-
-    # TODO: section names are kinda guessed for the HC32F46x
-    SIZEPROGREGEXP=r"^(?:\.vectors|\.icg_sec|\.rodata|\.text|\.rodata|\.ARM.extab|\.ARM.exidx|\.preinit_array|\.init_array|\.fini_array|\.data)\s+(\d+).*",
-    SIZEDATAREGEXP=r"^(?:\.data|\.bss)\s+(\d+).*",
+    
     SIZECHECKCMD="$SIZETOOL -A -d $SOURCES",
     SIZEPRINTCMD="$SIZETOOL -B -d $SOURCES",
+    
+    # note: size regexprs are defined in framework build, as they
+    # depend on the linker script used
 
     PROGSUFFIX=".elf"
 )

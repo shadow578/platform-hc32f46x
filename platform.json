@@ -1,6 +1,6 @@
 {
   "name": "hc32f46x",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "title": "HC32F46X",
   "description": "HC32F46x",
   "homepage": "",
@@ -33,7 +33,7 @@
     "toolchain-gccarmnoneeabi": {
       "type": "toolchain",
       "owner": "platformio",
-      "version": ">=1.100301.220327"
+      "version": "=1.120201.221222"
     },
     "framework-arduino-hc32f46x": {
       "type": "framework",

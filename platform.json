@@ -33,7 +33,7 @@
     "toolchain-gccarmnoneeabi": {
       "type": "toolchain",
       "owner": "platformio",
-      "version": "=1.120201.221222"
+      "version": "=1.120301.0"
     },
     "framework-arduino-hc32f46x": {
       "type": "framework",

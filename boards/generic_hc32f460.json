@@ -2,7 +2,10 @@
   "name": "Generic HC32F460 Series",
   "url": "https://www.hdsc.com.cn/Category83-1487",
   "vendor": "HUADA Semiconductor",
-  "frameworks": ["arduino", "ddl"],
+  "frameworks": [
+    "arduino",
+    "ddl"
+  ],
   "build": {
     "variant": "generic_hc32f460",
     "ld_args": {
@@ -17,6 +20,22 @@
     "maximum_ram_size": 192512
   },
   "debug": {
-    "svd_path": "HDSC_HC32F460.svd"
+    "svd_path": "HDSC_HC32F460.svd",
+    "tools": {
+      "cmsis-dap": {
+        "server": {
+          "package": "tool-openocd",
+          "executable": "bin/openocd",
+          "arguments": [
+            "-f",
+            "interface/cmsis-dap.cfg",
+            "-f",
+            "target/stm32f4x.cfg",
+            "-c",
+            "gdb_memory_map disable"
+          ]
+        }
+      }
+    }
   }
 }

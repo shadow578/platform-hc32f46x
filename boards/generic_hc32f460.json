@@ -20,22 +20,7 @@
     "maximum_ram_size": 192512
   },
   "debug": {
-    "svd_path": "HDSC_HC32F460.svd",
-    "tools": {
-      "cmsis-dap": {
-        "server": {
-          "package": "tool-openocd",
-          "executable": "bin/openocd",
-          "arguments": [
-            "-f",
-            "interface/cmsis-dap.cfg",
-            "-f",
-            "target/stm32f4x.cfg",
-            "-c",
-            "gdb_memory_map disable"
-          ]
-        }
-      }
-    }
+    "openocd_target": "HC32:hc32f460",
+    "svd_path": "HDSC_HC32F460.svd"
   }
 }

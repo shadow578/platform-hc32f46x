@@ -100,9 +100,6 @@ target_size = env.AddPlatformTarget(
 # Target: Upload by default .bin file
 #
 
-print("waiting for debugger. press enter to continue")
-input("")
-
 upload_protocol = env.subst("$UPLOAD_PROTOCOL")
 debug_tools = board.get("debug.tools", {})
 upload_actions = []
@@ -123,9 +120,19 @@ if upload_protocol in debug_tools:
     assert isinstance(offset_address, int)
     assert isinstance(maximum_size, int)
 
-    # if maximum_size is 256K, pyocd_target should be 'hc32f460xc'
-    # for 512K, pyocd_target should be 'hc32f460xe'
-    expected_pyocd_target = 'hc32f460xc' if maximum_size == 256 * 1024 else 'hc32f460xe'
+    # if maximum_size is > 256K, pyocd_target should be 'hc32f460xe'
+    # for <= 256K, pyocd_target should be 'hc32f460xc'
+    # above 512K, there is no target available
+    if maximum_size > (512 * 1024):
+        # flash size > 512K
+        raise ValueError(f"Flash size {maximum_size} is too large for any HC32F460 target!")
+    elif maximum_size > (256 * 1024):
+        # 256K < flash size <= 512K
+        expected_pyocd_target = "hc32f460xe"
+    else:
+        # flash size <= 256K
+        expected_pyocd_target = "hc32f460xc"
+
     if pyocd_target != expected_pyocd_target:
         sys.stderr.write(
             f"Warning: pyOCD target '{pyocd_target}' is not expected for {maximum_size} flash size. Updating to '{expected_pyocd_target}'\n"
@@ -139,7 +146,7 @@ if upload_protocol in debug_tools:
         "--no-wait",
         "--target", pyocd_target,
         "--base-address", f"0x{offset_address:x}",
-        "{$SOURCE}"  
+        "$SOURCE"  
     ])
     print("pyocd_load_cmd", pyocd_load_cmd)
 

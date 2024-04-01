@@ -128,6 +128,7 @@ class Hc32f46xPlatform(PlatformBase):
         # TODO adding GDP commands in this way seems really hacky...
         env_options["debug_extra_cmds"] = [
             #"target extended-remote localhost:3333",
+            "set mem inaccessible-by-default off",
             *debug_extra_cmds,
         ]
 

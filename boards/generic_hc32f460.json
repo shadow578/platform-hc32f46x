@@ -20,7 +20,7 @@
     "maximum_ram_size": 192512
   },
   "debug": {
-    "openocd_target": "HC32:hc32f460",
+    "pyocd_target": "hc32f460xe",
     "svd_path": "HDSC_HC32F460.svd"
   }
 }

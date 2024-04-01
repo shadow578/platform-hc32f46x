@@ -12,11 +12,46 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
+import sys
+import subprocess
+import pkg_resources
 
+from platformio import proc
 from platformio.managers.platform import PlatformBase
 
+def is_pyocd_installed():
+    """Check if pyOCD is installed."""
+    try:
+        import pyocd
+        return pyocd.__version__ == "0.36.0"
+    except ImportError:
+        return False
+
+def install_pyocd():
+    """Install pyOCD package."""
+    args = [
+        proc.get_pythonexe_path(),
+        "-m",
+        "pip",
+        "install",
+        "pyocd==0.36.0"
+    ]
+
+    return subprocess.call(args) == 0
+
 class Hc32f46xPlatform(PlatformBase):
+
+    def configure_default_packages(self, variables, targets):
+        # install pyOCD 0.36.0 package
+        # TODO this is a workaround needed until PlatformIO decided they'd want to support 
+        # a pyOCD version that isn't absolutely ancient...
+        if not is_pyocd_installed():
+            sys.stderr.write("Warning: pyOCD is not installed. Installing...\n")
+            if not install_pyocd():
+                sys.stderr.write("Error: Couldn't install dependencies for pyOCD!\n")
+                sys.exit(1)
+        
+        return super().configure_default_packages(variables, targets)
 
     def get_boards(self, id_=None):
         result = PlatformBase.get_boards(self, id_)
@@ -43,39 +78,38 @@ class Hc32f46xPlatform(PlatformBase):
                 continue
 
             # get target script from board manifest
-            openocd_target = debug.get("openocd_target")
-            assert openocd_target, (
+            pyocd_target = debug.get("pyocd_target")
+            assert pyocd_target, (
                 f"Missed target configuration for {board.id}")
-            
-            # if the target name starts with 'HC32:', it should use 
-            # a target script provided by this platform, otherwise
-            # it should use a script provided by OpenOCD
-            if openocd_target.startswith("HC32:"):
-                openocd_custom_scripts_dir = os.path.join(
-                    self.get_dir(), "misc", "openocd"
-                )
-                target_script = os.path.join(
-                    openocd_custom_scripts_dir, "target",  openocd_target[5:] + ".cfg"
-                )
-            else:
-                target_script = f"target/{openocd_target}.cfg"
             
             # create OpenOCD server arguments
             server_args = [
-                "-s", "$PACKAGE_DIR/openocd/scripts",
-                "-f", f"interface/{interface}.cfg",
-                "-c", f"transport select {('hla_swd' if interface == 'stlink' else 'swd')}",
-                "-f", target_script
+                "-m", "pyocd",
+                "gdbserver",
+                "--target", pyocd_target,
             ]
-            server_args.extend(debug.get("openocd_extra_args", []))
+            server_args.extend(debug.get("pyocd_extra_args", []))
             
             # assign the tool configuration
             debug["tools"][interface] = {
                 "server": {
-                    "package": "tool-openocd",
-                    "executable": "bin/openocd",
-                    "arguments": server_args
-                }
+                    #"package": "tool-openocd",
+                    "executable": "$PYTHONEXE",
+                    "arguments": server_args,
+                    "ready_pattern": "GDB server started on port 3333",
+                },
+                "port": ":3333",
+                "init_cmds": [
+                    "define pio_reset_halt_target",
+                    "   monitor reset halt",
+                    "end",
+                    "define pio_reset_run_target",
+                    "   monitor reset",
+                    "end",
+                    "target remote $DEBUG_PORT",
+                    "$INIT_BREAK",
+                    "$LOAD_CMDS"
+                ],
             }
 
         board.manifest["debug"] = debug
@@ -93,9 +127,7 @@ class Hc32f46xPlatform(PlatformBase):
         # add extra commands to GDB
         # TODO adding GDP commands in this way seems really hacky...
         env_options["debug_extra_cmds"] = [
-            "mem 0x00000000 0x0007FFFF ro", # 512KB flash
-            "mem 0x1FFF8000 0x20026FFF rw", # 187KB RAM (excluding RET_RAM)
-            "set mem inaccessible-by-default off",
+            #"target extended-remote localhost:3333",
             *debug_extra_cmds,
         ]
 

@@ -14,7 +14,6 @@
 
 import sys
 import subprocess
-import pkg_resources
 
 from platformio import proc
 from platformio.managers.platform import PlatformBase

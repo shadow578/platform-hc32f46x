@@ -1,29 +1,57 @@
-# HUADA HC32F460 Series: development platform for [PlatformIO](https://platformio.org)
+# HUADA HC32F460 Series development platform for [PlatformIO](https://platformio.org)
 
 The HC32F460 Series of MCUs is a 32-bit MCU based on the ARM Cortex-M4 processor.
 It integrates up to 512 KB of Flash memory, and up to 192 KB of SRAM.
 
 These MCUs are somewhat often found in entry level 3D printers, tho development boards are rumored to exist as well.
 
-1. [Install PlatformIO](https://platformio.org)
-2. Create PlatformIO project and configure a platform option in [platformio.ini](https://docs.platformio.org/page/projectconf.html) file:
+> [!NOTE]
+> if you have a source for development boards that ships to Europe and is not absurdly expensive, please let me know by opening an issue.
 
-## Development Version
 
+## Getting Started
+
+to get started using the HC32F460 platform, use the following in your [`platformio.ini`](https://docs.platformio.org/page/projectconf.html) file:
+
+current *development* version:
 ```ini
-[env:myenv]
+[env:my_env]
 platform = https://github.com/shadow578/platform-hc32f46x.git
+framework = arduino
 board = generic_hc32f460
-...
 ```
 
-# Configuration
+latest release versions:
+```ini
+[env:my_env]
+platform = https://github.com/shadow578/platform-hc32f46x/archive/1.0.0.zip
+platform_packages =
+  framework-hc32f46x-ddl @ https://github.com/shadow578/framework-hc32f46x-ddl/archive/2.2.1.zip
+  framework-arduino-hc32f46x @ https://github.com/shadow578/framework-arduino-hc32f46x/archive/1.1.0.zip
 
-The platform itself contains basically no configuration options.
-Everything is configured in the framework packages.
-Please refer to [framework-arduino-hc32f46x](https://github.com/shadow578/framework-arduino-hc32f46x) and [framework-hc32f46x-ddl](https://github.com/shadow578/framework-hc32f46x-ddl) for more information.
+framework = arduino
+board = generic_hc32f460
+```
 
-# Notice
+> [!TIP]
+> when pinning the version, check you're using the latest release(s) to benefit from the latest improvements.
 
-this platform is still in development, and not yet ready for production use.
-expect things to break over time.
+> [!NOTE]
+> please refer to [framework-hc32f46x-ddl](https://github.com/shadow578/framework-hc32f46x-ddl) and [framework-arduino-hc32f46x](https://github.com/shadow578/framework-arduino-hc32f46x/) for more information on the frameworks themselves.
+
+
+## Configuration
+
+the platform itself contains basically no configuration options.
+everything is configured in the framework packages.
+
+please refer to [framework-arduino-hc32f46x](https://github.com/shadow578/framework-arduino-hc32f46x) and [framework-hc32f46x-ddl](https://github.com/shadow578/framework-hc32f46x-ddl) for more information.
+
+
+## Debugging
+
+please refer to the [HOW_TO_DEBUG.md](./docs/HOW_TO_DEBUG.md) file for information on how to debug your code on the HC32F460 platform.
+
+## License
+
+this project is licensed under the [GPL-3.0](./LICENSE) license.

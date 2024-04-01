@@ -93,8 +93,8 @@ class Hc32f46xPlatform(PlatformBase):
         # add extra commands to GDB
         # TODO adding GDP commands in this way seems really hacky...
         env_options["debug_extra_cmds"] = [
-            "mem 0x00000000 0x0007FFFF ro",
-            "mem 0x1FFF8000 0x20026FFF rw",
+            "mem 0x00000000 0x0007FFFF ro", # 512KB flash
+            "mem 0x1FFF8000 0x20026FFF rw", # 187KB RAM (excluding RET_RAM)
             "set mem inaccessible-by-default off",
             *debug_extra_cmds,
         ]

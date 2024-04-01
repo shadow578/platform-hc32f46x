@@ -85,6 +85,7 @@ class Hc32f46xPlatform(PlatformBase):
             server_args = [
                 "-m", "pyocd",
                 "gdbserver",
+                "--no-wait",
                 "--target", pyocd_target,
             ]
             server_args.extend(debug.get("pyocd_extra_args", []))

@@ -48,9 +48,9 @@ everything is configured in the framework packages.
 please refer to [framework-arduino-hc32f46x](https://github.com/shadow578/framework-arduino-hc32f46x) and [framework-hc32f46x-ddl](https://github.com/shadow578/framework-hc32f46x-ddl) for more information.
 
 
-## Debugging
+## Uploading & Debugging
 
-please refer to the [HOW_TO_DEBUG.md](./docs/HOW_TO_DEBUG.md) file for information on how to debug your code on the HC32F460 platform.
+please refer to [HOW_TO_UPLOAD](./docs/HOW_TO_UPLOAD.md) and [HOW_TO_DEBUG](./docs/HOW_TO_DEBUG.md) for information on how to upload and debug your code on the HC32F460 platform.
 
 ## License
 

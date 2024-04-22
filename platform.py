@@ -46,7 +46,7 @@ class Hc32f46xPlatform(PlatformBase):
         if "tools" not in debug:
             debug["tools"] = {}
 
-        # add configuratins for OpenOCD based debugging probes
+        # add configurations for pyOCD based debugging probes
         for interface in ("stlink", "cmsis-dap"):
             # skip if the tool is already defined
             if interface in debug["tools"]:
@@ -57,7 +57,7 @@ class Hc32f46xPlatform(PlatformBase):
             assert pyocd_target, (
                 f"Missed target configuration for {board.id}")
             
-            # create OpenOCD server arguments
+            # create pyOCD server arguments
             server_args = [
                 "-m", "pyocd",
                 "gdbserver",
@@ -69,7 +69,7 @@ class Hc32f46xPlatform(PlatformBase):
             # assign the tool configuration
             debug["tools"][interface] = {
                 "server": {
-                    "package": "tool-openocd",
+                    "package": "tool-pyocd",
                     "executable": "$PYTHONEXE",
                     "arguments": server_args,
                     "ready_pattern": "GDB server started on port 3333",
@@ -91,15 +91,3 @@ class Hc32f46xPlatform(PlatformBase):
 
         board.manifest["debug"] = debug
         return board
-
-    def configure_debug_session(self, debug_config):
-        if debug_config.speed:
-            server_executable = (debug_config.server or {}).get("executable", "").lower()
-            if "openocd" in server_executable:
-                debug_config.server["arguments"].extend(
-                    ["-c", "adapter speed %s" % debug_config.speed]
-                )
-            elif "jlink" in server_executable:
-                debug_config.server["arguments"].extend(
-                    ["-speed", debug_config.speed]
-                )

@@ -35,6 +35,12 @@
       "owner": "platformio",
       "version": "=1.120301.0"
     },
+    "tool-pyocd": {
+      "type": "debugger",
+      "optional": true,
+      "owner": "platformio",
+      "version": "~2.3600.0"
+    },
     "framework-arduino-hc32f46x": {
       "type": "framework",
       "version": "https://github.com/shadow578/framework-arduino-hc32f46x.git"

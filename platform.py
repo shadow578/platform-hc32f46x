@@ -18,37 +18,13 @@ import subprocess
 from platformio import proc
 from platformio.managers.platform import PlatformBase
 
-def is_pyocd_installed():
-    """Check if pyOCD is installed."""
-    try:
-        import pyocd
-        return pyocd.__version__ == "0.36.0"
-    except ImportError:
-        return False
-
-def install_pyocd():
-    """Install pyOCD package."""
-    args = [
-        proc.get_pythonexe_path(),
-        "-m",
-        "pip",
-        "install",
-        "pyocd==0.36.0"
-    ]
-
-    return subprocess.call(args) == 0
-
 class Hc32f46xPlatform(PlatformBase):
-
     def configure_default_packages(self, variables, targets):
-        # install pyOCD 0.36.0 package
-        # TODO this is a workaround needed until PlatformIO decided they'd want to support 
-        # a pyOCD version that isn't absolutely ancient...
-        if not is_pyocd_installed():
-            sys.stderr.write("Warning: pyOCD is not installed. Installing...\n")
-            if not install_pyocd():
-                sys.stderr.write("Error: Couldn't install dependencies for pyOCD!\n")
-                sys.exit(1)
+        if variables.get("board"):
+            board = variables.get("board")
+            upload_protocol = variables.get("upload_protocol", self.board_config(variables.get("board")).get("upload.protocol", ""))
+            if upload_protocol == "cmsis-dap":
+                self.packages["tool-pyocd"]["type"] = "uploader"
         
         return super().configure_default_packages(variables, targets)
 
@@ -93,7 +69,7 @@ class Hc32f46xPlatform(PlatformBase):
             # assign the tool configuration
             debug["tools"][interface] = {
                 "server": {
-                    #"package": "tool-openocd",
+                    "package": "tool-openocd",
                     "executable": "$PYTHONEXE",
                     "arguments": server_args,
                     "ready_pattern": "GDB server started on port 3333",
@@ -106,6 +82,7 @@ class Hc32f46xPlatform(PlatformBase):
                     "define pio_reset_run_target",
                     "   monitor reset",
                     "end",
+                    "set mem inaccessible-by-default off",
                     "target remote $DEBUG_PORT",
                     "$INIT_BREAK",
                     "$LOAD_CMDS"
@@ -116,22 +93,6 @@ class Hc32f46xPlatform(PlatformBase):
         return board
 
     def configure_debug_session(self, debug_config):
-        env_options = debug_config.env_options
-
-        # get user-defined debug_extra_cmds
-        if "debug_extra_cmds" in env_options:
-            debug_extra_cmds = env_options["debug_extra_cmds"]
-        else:
-            debug_extra_cmds = []
-
-        # add extra commands to GDB
-        # TODO adding GDP commands in this way seems really hacky...
-        env_options["debug_extra_cmds"] = [
-            #"target extended-remote localhost:3333",
-            "set mem inaccessible-by-default off",
-            *debug_extra_cmds,
-        ]
-
         if debug_config.speed:
             server_executable = (debug_config.server or {}).get("executable", "").lower()
             if "openocd" in server_executable:

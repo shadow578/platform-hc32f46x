@@ -148,7 +148,6 @@ if upload_protocol in debug_tools:
         "--base-address", f"0x{offset_address:x}",
         "$SOURCE"  
     ])
-    print("pyocd_load_cmd", pyocd_load_cmd)
 
     upload_actions = [
         env.VerboseAction(pyocd_load_cmd, "Uploading $SOURCE")

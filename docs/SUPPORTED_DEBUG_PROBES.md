@@ -12,3 +12,7 @@ it may be possible to add support for other debug probes as long as they are sup
 > when using the [Raspberry Pi Debug Probe (CMSIS-DAP v2)](https://www.raspberrypi.com/documentation/microcontrollers/debug-probe.html),
 > use `cmsis-dap`
 
+
+> [!TIP]
+> A Raspberry Pi Pico (or clone) with [raspberrypi/debugprobe](https://github.com/raspberrypi/debugprobe) can be used 
+> as a inexpensive (< $5) SWD Probe.

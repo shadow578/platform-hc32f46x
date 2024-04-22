@@ -47,7 +47,9 @@ class Hc32f46xPlatform(PlatformBase):
             debug["tools"] = {}
 
         # add configurations for pyOCD based debugging probes
-        for interface in ("stlink", "cmsis-dap"):
+        # supported probes see https://pyocd.io/docs/debug_probes.html
+        # Note: recent stlink versions block non-ST parts and won't work
+        for interface in ("cmsis-dap", "jlink", "stlink"):
             # skip if the tool is already defined
             if interface in debug["tools"]:
                 continue

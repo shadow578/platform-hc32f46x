@@ -12,16 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
-import subprocess
-
-from platformio import proc
 from platformio.managers.platform import PlatformBase
 
 class Hc32f46xPlatform(PlatformBase):
     def configure_default_packages(self, variables, targets):
         if variables.get("board"):
-            board = variables.get("board")
             upload_protocol = variables.get("upload_protocol", self.board_config(variables.get("board")).get("upload.protocol", ""))
             if upload_protocol == "cmsis-dap":
                 self.packages["tool-pyocd"]["type"] = "uploader"
@@ -77,18 +72,6 @@ class Hc32f46xPlatform(PlatformBase):
                     "ready_pattern": "GDB server started on port 3333",
                 },
                 "port": ":3333",
-                "init_cmds": [
-                    "define pio_reset_halt_target",
-                    "   monitor reset halt",
-                    "end",
-                    "define pio_reset_run_target",
-                    "   monitor reset",
-                    "end",
-                    "set mem inaccessible-by-default off",
-                    "target remote $DEBUG_PORT",
-                    "$INIT_BREAK",
-                    "$LOAD_CMDS"
-                ],
             }
 
         board.manifest["debug"] = debug

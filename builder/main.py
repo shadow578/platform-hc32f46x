@@ -13,6 +13,7 @@ from SCons.Script import (
 # resolve environment
 env = DefaultEnvironment()
 board = env.BoardConfig()
+platform = env.PioPlatform()
 
 
 # use arm-none-eabi-* binaries
@@ -138,10 +139,13 @@ if upload_protocol in debug_tools:
             f"Warning: pyOCD target '{pyocd_target}' is not expected for {maximum_size} flash size. Updating to '{expected_pyocd_target}'\n"
         )
         pyocd_target = expected_pyocd_target
+    
+    # get pyocd tool path
+    pyocd_path = join(platform.get_package_dir("tool-pyocd"), "pyocd.py")
 
     # build upload command
     pyocd_load_cmd = " ".join([
-        "$PYTHONEXE", "-m", "pyocd",
+        "$PYTHONEXE", pyocd_path,
         "load",
         "--no-wait",
         "--target", pyocd_target,

@@ -2,13 +2,12 @@
   "name": "Generic HC32F460 Series",
   "url": "https://www.hdsc.com.cn/Category83-1487",
   "vendor": "HUADA Semiconductor",
-  "frameworks": ["arduino", "ddl"],
+  "frameworks": [
+    "arduino",
+    "ddl"
+  ],
   "build": {
     "variant": "generic_hc32f460",
-    "ld_args": {
-      "flash_start": "0x00000000",
-      "flash_size": "256K"
-    },
     "cpu": "cortex-m4",
     "f_cpu": "8000000"
   },
@@ -17,6 +16,7 @@
     "maximum_ram_size": 192512
   },
   "debug": {
+    "pyocd_target": "hc32f460xc",
     "svd_path": "HDSC_HC32F460.svd"
   }
 }

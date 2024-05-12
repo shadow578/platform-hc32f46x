@@ -12,6 +12,8 @@ from SCons.Script import (
 
 # resolve environment
 env = DefaultEnvironment()
+board = env.BoardConfig()
+platform = env.PioPlatform()
 
 
 # use arm-none-eabi-* binaries
@@ -93,6 +95,74 @@ target_size = env.AddPlatformTarget(
     "Program Size",
     "Calculate program size",
 )
+
+
+#
+# Target: Upload by default .bin file
+#
+
+upload_protocol = env.subst("$UPLOAD_PROTOCOL")
+debug_tools = board.get("debug.tools", {})
+upload_actions = []
+
+if upload_protocol in debug_tools:
+    # upload using pyOCD
+    pyocd_target = board.get("debug.pyocd_target")
+    assert pyocd_target, (
+        f"Missed pyOCD target for upload to {board.id}"
+    )
+
+    offset_address = board.get("upload.offset_address", 0)
+    if isinstance(offset_address, str):
+        offset_address = int(offset_address, 16) if offset_address.startswith("0x") else int(offset_address)
+
+    maximum_size = board.get("upload.maximum_size", 262144)
+
+    assert isinstance(offset_address, int)
+    assert isinstance(maximum_size, int)
+
+    # if maximum_size is > 256K, pyocd_target should be 'hc32f460xe'
+    # for <= 256K, pyocd_target should be 'hc32f460xc'
+    # above 512K, there is no target available
+    if maximum_size > (512 * 1024):
+        # flash size > 512K
+        raise ValueError(f"Flash size {maximum_size} is too large for any HC32F460 target!")
+    elif maximum_size > (256 * 1024):
+        # 256K < flash size <= 512K
+        expected_pyocd_target = "hc32f460xe"
+    else:
+        # flash size <= 256K
+        expected_pyocd_target = "hc32f460xc"
+
+    if pyocd_target != expected_pyocd_target:
+        sys.stderr.write(
+            f"Warning: pyOCD target '{pyocd_target}' is not expected for {maximum_size} flash size. Updating to '{expected_pyocd_target}'\n"
+        )
+        pyocd_target = expected_pyocd_target
+    
+    # get pyocd tool path
+    pyocd_path = join(platform.get_package_dir("tool-pyocd"), "pyocd.py")
+
+    # build upload command
+    pyocd_load_cmd = " ".join([
+        "$PYTHONEXE", pyocd_path,
+        "load",
+        "--no-wait",
+        "--target", pyocd_target,
+        "--base-address", f"0x{offset_address:x}",
+        "$SOURCE"  
+    ])
+
+    upload_actions = [
+        env.VerboseAction(pyocd_load_cmd, "Uploading $SOURCE")
+    ]
+elif upload_protocol == "custom":
+    # custom upload tool
+    upload_actions = [env.VerboseAction("$UPLOADCMD", "Uploading $SOURCE")]
+else:
+    sys.stderr.write(f"Warning! Unknown upload protocol {upload_protocol}!\n")
+
+AlwaysBuild(env.Alias("upload", target_firm, upload_actions))
 
 
 #

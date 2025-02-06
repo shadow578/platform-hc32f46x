@@ -159,8 +159,11 @@ if upload_protocol in debug_tools:
 elif upload_protocol == "custom":
     # custom upload tool
     upload_actions = [env.VerboseAction("$UPLOADCMD", "Uploading $SOURCE")]
+elif upload_protocol == "":
+    # ignore if no upload protocol was defined
+    pass
 else:
-    sys.stderr.write(f"Warning! Unknown upload protocol {upload_protocol}!\n")
+    sys.stderr.write(f"Warning! Unknown upload protocol '{upload_protocol}'!\n")
 
 AlwaysBuild(env.Alias("upload", target_firm, upload_actions))
 
